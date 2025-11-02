@@ -41,15 +41,18 @@ public final class Book implements Comparable<Book>{
 
         Book otherBook = (Book) other;
 
-        return (this.title.equals(otherBook.getTitle()) && this.author.equals(otherBook.getAuthor()));
+        return (this.id.equals(otherBook.getId()) && this.id.equals(otherBook.getId()));
     }
 
     @Override
     public int hashCode(){
-        return Objects.hash(this.title, this.author);
+        return Objects.hash(this.id);
     }
 
+    @Override
     public int compareTo(Book otherBook){
+        if(otherBook == null) throw new IllegalArgumentException("\nComparable object cannot be null!");
+        
         if (this.title.compareTo(otherBook.getTitle()) != 0 ) return this.title.compareTo(otherBook.getTitle());
         
         if (this.author.compareTo(otherBook.getAuthor()) != 0 ) return this.author.compareTo(otherBook.getAuthor());
