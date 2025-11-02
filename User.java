@@ -8,15 +8,15 @@ public final class User implements Comparable <User>{
 
     public User(String id, String name){
         if (id != null && !id.isBlank()) this.id = id;
-        else throw new IllegalArgumentException("User's Id cannot be null or empty");
+        else throw new IllegalArgumentException("User Id cannot be null or empty");
 
         if (name != null && !name.isBlank()) this.name = name;
-        else throw new IllegalArgumentException("User's Name cannot be null or empty");
+        else throw new IllegalArgumentException("User Name cannot be null or empty");
     }
 
     @Override
     public String toString(){
-        return "\nUser's Id: " + this.id + "\nUser's Name: " + this.name;
+        return "\nUser Id: " + this.id + "\nUser Name: " + this.name;
     }
 
     @Override
