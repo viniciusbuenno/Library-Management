@@ -14,24 +14,30 @@ public class Library{
         this.loans = new ArrayList<>();
     }
 
+    private boolean validateStringParameter(String ParameterToBeValidated){
+        if (ParameterToBeValidated == null || ParameterToBeValidated.isEmpty()) throw new IllegalArgumentException("\nParameter \""+ParameterToBeValidated+"\" cannot be null or empty!");
+
+        return true;
+    }
+
     public void addBook(Book book){
-        if (book == null) throw new IllegalArgumentException("Book to be add cannot be null");
+        if (book == null) throw new IllegalArgumentException("\nBook to be add cannot be null!");
         
         if (findBookById(book.getId()) == null) this.books.add(book);
-        else throw new IllegalArgumentException("Book with Id: " + book.getId() + "already exists and cannot be added");
+        else throw new IllegalArgumentException("\nBook with Id: " + book.getId() + "already exists and cannot be added!");
     }
 
     public void addUser(User user){
-        if (user == null) throw new IllegalArgumentException("User to be add cannot be null");
+        if (user == null) throw new IllegalArgumentException("\nUser to be add cannot be null!");
 
         if (findUserById(user.getId()) == null) this.users.add(user);
-        else throw new IllegalArgumentException("User with Id: " + user.getId() + "already exists and cannot be added");
+        else throw new IllegalArgumentException("\nUser with Id: " + user.getId() + "already exists and cannot be added!");
     }
     
 
     public List<Book> searchBook(String word){
         
-        if (word == null || word.isBlank()) throw new IllegalArgumentException("Word used in a search for books must not be null or empty");
+        validateStringParameter(word);
 
         List<Book> result = new ArrayList<>();
         
@@ -48,7 +54,7 @@ public class Library{
 
     private Book findBookById(String id){
         
-        if(id == null || id.isEmpty()) throw new IllegalArgumentException("Id used in book search must not be null or empty!");
+        validateStringParameter(id);
 
         for (Book book: books){
             if (book.getId().toLowerCase().equals(id.toLowerCase().trim())) return book;
@@ -60,7 +66,7 @@ public class Library{
 
     private User findUserById(String id){
         
-        if(id == null || id.isEmpty()) throw new IllegalArgumentException("Id used in user search must not be null or empty!");
+        validateStringParameter(id);
 
         for (User user: users){
             if (user.getId().toLowerCase().equals(id.toLowerCase().trim())) return user;
@@ -70,7 +76,8 @@ public class Library{
     }
 
     private Loan getLoanByBookId(String bookId){
-        
+        validateStringParameter(bookId);
+
         for (Loan loan: loans){
             if(loan.getBook().getId().equals(bookId)) return loan;
         }
@@ -81,10 +88,10 @@ public class Library{
 
     public void registerLoan(String bookId, String userId){
         
-        if(bookId == null || bookId.isEmpty()) throw new IllegalArgumentException("\nBook Id cannot be null or empty when loaning a book");
+        validateStringParameter(bookId);
+        validateStringParameter(userId);
 
-        if(userId == null || userId.isEmpty()) throw new IllegalArgumentException("\n User Id cannot be null or empty when loaning a book");
-
+        
         Book book = findBookById(bookId);
 
         if (book == null) throw new IllegalArgumentException("\nBook does not exist!");
@@ -101,7 +108,7 @@ public class Library{
         boolean userIsLoaningThisBook = (isBookBeingLoaned && loan.getUser().getId().equals(userId));
 
 
-        if(user != null && book.isAvailable() && !userIsLoaningThisBook) {
+        if(book.isAvailable() && !userIsLoaningThisBook) {
             loans.add(new Loan(book, user, loanDate, returnDate));
             book.setAvailable(false);
         }
@@ -109,13 +116,14 @@ public class Library{
 
     public void returnBook(String bookId, String userId){
         
-        if(bookId == null || bookId.isEmpty()) throw new IllegalArgumentException("\nBook Id cannot be null or empty when returning a book");
+        validateStringParameter(bookId);
+        validateStringParameter(userId);
+        
 
-        if(userId == null || userId.isEmpty()) throw new IllegalArgumentException("\n User Id cannot be null or empty when returning a book");
-
-        User user = findUserById(userId);
         Book book = findBookById(bookId);
-
+        if (book == null) throw new IllegalArgumentException("\nBook does not exist!");  
+        User user = findUserById(userId);
+        if (user == null) throw new IllegalArgumentException("\nUser does not exist!");  
         
          
         for (Loan loan: loans){
@@ -157,9 +165,10 @@ public class Library{
 
     public void removeBook(String bookId){
         
-        if(bookId == null || bookId.isEmpty()) throw new IllegalArgumentException("\nBook Id cannot be null or empty when removing a book");
+        validateStringParameter(bookId);
 
         Book book = findBookById(bookId);
+        if (book == null) throw new IllegalArgumentException("\nBook does not exist!");  
 
         if (book.isAvailable()) books.remove(book);
 
@@ -167,6 +176,7 @@ public class Library{
 
     public void removeUser(String userId){
         User user = findUserById(userId);
+        if (user == null) throw new IllegalArgumentException("\nUser does not exist!");  
 
         boolean hasActiveLoans = loans.stream().anyMatch(loan -> loan.getUser().getId().equals(userId) && loan.getReturnDate() == null);
 
@@ -176,6 +186,8 @@ public class Library{
     }
 
     public long getDaysBeforeReturnLoan(Loan loan){
+        if (loan == null) throw new IllegalArgumentException("\nLoan cannot be null!");  
+
         if (loan.getReturnDate() == null) return 0;
 
         return ChronoUnit.DAYS.between(LocalDate.now(), loan.getReturnDate());
