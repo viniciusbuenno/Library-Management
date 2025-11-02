@@ -14,11 +14,16 @@ public class Loan implements Comparable<Loan>{
     public LocalDate getReturnDate(){ return this.returnDate; }
 
     public void setReturnDate(LocalDate returnDate){
-        if(returnDate == null || returnDate.isBefore(this.loanDate)) throw new IllegalArgumentException("Loan returnal date cannot be eager than the loan date or empty");
+        if(returnDate == null || returnDate.isBefore(this.loanDate)) throw new IllegalArgumentException("\nLoan return date cannot be eager than the loan date or empty");
         this.returnDate = returnDate;
     }
 
     public Loan(Book book, User user, LocalDate loanDate, LocalDate returnDate){
+        if (book == null) throw new IllegalArgumentException("\nBook cannot be null");
+        if (user == null) throw new IllegalArgumentException("\nUser cannot be null");
+        if (loanDate == null) throw new IllegalArgumentException("\nLoan Date cannot be null");
+        
+
         this.book = book;
         this.user = user;
         this.loanDate = loanDate;
